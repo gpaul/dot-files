@@ -19,7 +19,10 @@ There are two things you can do about this warning:
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (phi-search-mc phi-search multiple-cursors))))
+ '(custom-enabled-themes (quote (wombat)))
+ '(package-selected-packages
+   (quote
+    (go-mode company-lsp company lsp-ui lsp-mode phi-search-mc phi-search multiple-cursors))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -87,3 +90,75 @@ There are two things you can do about this warning:
     (define-key map [remap mc/mark-previous-like-this] 'mc-isearch/mark-next-like-this-and-cycle-backward)
     ))
 (add-hook 'isearch-mode-hook 'gpaul-mc-isearch/setup-keys)
+
+(global-set-key (kbd "C-x C-k") 'kill-region)
+
+(toggle-scroll-bar -1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+(defun toggle-fullscreen ()
+  "Toggle full screen on X11"
+  (when (eq window-system 'x)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+
+(global-set-key [f11] 'toggle-fullscreen)
+
+(toggle-fullscreen)
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t      ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 20   ; how many of the newest versions to keep
+  kept-old-versions 5    ; and how many of the old
+  )
+
+
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; list colum in gutter
+(column-number-mode t)
+
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq ido-create-new-buffer 'always)
+(ido-mode 1)
+
+;;disable splash screen and startup message
+(setq inhibit-startup-message t)
+(setq initial-scratch-message nil)
+
+;; don't ask: https://emacs.stackexchange.com/questions/15117/how-to-use-o-to-open-from-dired-ibuffer-into-another-frame
+(setq split-height-threshold nil)
+(setq split-width-threshold nil)
+
+
+(require 'lsp-mode)
+(add-hook 'go-mode-hook 'lsp-deferred)
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+(require 'lsp-ui)
+(require 'company)
+(require 'company-lsp)
+
+;(defun lsp-go-install-save-hooks ()
+;  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+;(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;(setq lsp-ui-doc-enable nil
+;      lsp-ui-peek-enable t
+;      lsp-ui-sideline-enable t
+;      lsp-ui-imenu-enable t
+;      lsp-ui-flycheck-enable t)
