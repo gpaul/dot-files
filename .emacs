@@ -117,6 +117,7 @@ There are two things you can do about this warning:
   )
 
 
+
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -152,13 +153,18 @@ There are two things you can do about this warning:
 (require 'company)
 (require 'company-lsp)
 
-;(defun lsp-go-install-save-hooks ()
-;  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-;  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-;(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 1)
 
-;(setq lsp-ui-doc-enable nil
-;      lsp-ui-peek-enable t
-;      lsp-ui-sideline-enable t
-;      lsp-ui-imenu-enable t
-;      lsp-ui-flycheck-enable t)
+(global-set-key (kbd "C-'") 'company-complete)
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous))
+
+(setq lsp-ui-doc-enable nil
+      lsp-ui-peek-enable t
+      lsp-enable-snippet nil
+      lsp-ui-sideline-enable t
+      lsp-ui-imenu-enable t
+      lsp-ui-flycheck-enable t)
