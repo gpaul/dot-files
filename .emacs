@@ -22,7 +22,7 @@ There are two things you can do about this warning:
  '(custom-enabled-themes (quote (wombat)))
  '(package-selected-packages
    (quote
-    (go-mode company-lsp company lsp-ui lsp-mode phi-search-mc phi-search multiple-cursors))))
+    (helm-projectile helm projectile-ripgrep projectile go-mode company-lsp company lsp-ui lsp-mode phi-search-mc phi-search multiple-cursors))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -125,11 +125,6 @@ There are two things you can do about this warning:
 ;; list colum in gutter
 (column-number-mode t)
 
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(setq ido-create-new-buffer 'always)
-(ido-mode 1)
-
 ;;disable splash screen and startup message
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
@@ -168,3 +163,37 @@ There are two things you can do about this warning:
       lsp-ui-sideline-enable t
       lsp-ui-imenu-enable t
       lsp-ui-flycheck-enable t)
+
+
+(require 'projectile)
+(setq projectile-indexing-method 'alien)
+(setq projectile-enable-caching t)
+(projectile-global-mode)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+
+(require 'helm)
+(require 'helm-config)
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
+(helm-autoresize-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-mode-fuzzy-match t)
+(setq helm-completion-in-region-fuzzy-match t)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+(helm-mode 1)
+
+;; (setq helm-projectile-fuzzy-match nil)
+(require 'helm-projectile)
+(helm-projectile-on)
+
+;; (projectile-mode +1)
+
+;; Must enable helm before ido
+(setq ido-enable-flex-matching t)
+(setq ido-create-new-buffer 'always)
+(ido-mode 1)
+
+;; make font bigger
+(set-face-attribute 'default nil :height 120)
